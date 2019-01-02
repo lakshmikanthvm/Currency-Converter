@@ -1,0 +1,38 @@
+{
+  "name": "currency_converter",
+  "version": "1.0.0",
+  "description": "Currency converter application that converts a user’s selected base currency and outputs the equivalent money value of the exchange currency using the current day’s rate.",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lakshmikanthvm/Currency-Converter.git"
+  },
+  "keywords": [
+    "currency",
+    "converter",
+    "exchange",
+    "rate"
+  ],
+  "author": "Lakshmikanth V",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lakshmikanthvm/Currency-Converter/issues"
+  },
+  "homepage": "https://github.com/lakshmikanthvm/Currency-Converter#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^2.1.2"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
