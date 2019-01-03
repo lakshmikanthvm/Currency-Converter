@@ -3,6 +3,9 @@ import React from 'react';
 const CurrencySelector = (props) => {
   return (
     <div className="currency-selector-wrapper">
+      {(props.error && props.error !== null) ? 
+        <span className="error">{props.error}</span> : null 
+      }
       <label>{props.label}</label>
       <select 
         className="currency-selector" 

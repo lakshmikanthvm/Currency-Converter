@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-import CurrencySelector from './Components/UI/CurrencySelector/CurrencySelector';
+import CurrencySelector from './Components/CurrencySelector/CurrencySelector';
 
 import './CurrencyConverter.css';
 
@@ -17,9 +17,11 @@ class CurrencyConverter extends React.Component {
       toSelectedCurrency: 'USD',
       currencyFrom: 0.00,
       currencyTo: 0.00,
-      error: null,
       fromSymbol: '$',
-      toSymbol: '$'
+      toSymbol: '$',
+      error: null,
+      errorFrom: null,
+      errorTo: null
     };
   }
 
@@ -43,7 +45,13 @@ class CurrencyConverter extends React.Component {
     const toCurrency = (id === "currencyTo") ? value : this.state.currencyTo;
     const fromSymbol = (id === "fromSelectedCurrency") ? commonCurrencies[value.toUpperCase()].symbol : this.state.fromSymbol;
     const toSymbol = (id === "toSelectedCurrency") ? commonCurrencies[value.toUpperCase()].symbol : this.state.toSymbol;
-    this.setState({ [id] : value, error: null, fromSymbol: fromSymbol, toSymbol: toSymbol });    
+    this.setState({ [id] : value, 
+                    fromSymbol: fromSymbol, 
+                    toSymbol: toSymbol,
+                    error: null,
+                    errorFrom: null,
+                    errorTo: null 
+                  });    
     this.handleCurrencyConversion(from, to, fromCurrency, toCurrency);
   }
 
@@ -56,16 +64,39 @@ class CurrencyConverter extends React.Component {
             if(rates[from] && rates[to]) {
               if(fromCurrency !== 0) {
                 const toRate = parseFloat((fromCurrency / rates[from]) * rates[to]).toFixed(2);
-                this.setState({ currencyTo: toRate, error: null });
+                this.setState({ currencyTo: toRate, 
+                                error: null,
+                                errorFrom: null,
+                                errorTo: null 
+                              });
               } else if(toCurrency !== 0) {
                 const fromRate = parseFloat((toCurrency / rates[from]) * rates[to]).toFixed(2);
-                this.setState({ currencyFrom: fromRate, error: null });
+                this.setState({ currencyFrom: fromRate, 
+                                error: null,
+                                errorFrom: null,
+                                errorTo: null });
               }
+            } else if(!rates[from] && rates[to]) {
+              this.setState({ errorFrom: "The selected currency is not available!",
+                              error: null,
+                              errorTo: null 
+                            });
+            } else if(rates[from] && !rates[to]) {
+              this.setState({ errorTo: "The selected currency is not available!",
+                              error: null,
+                              errorFrom: null 
+                            });
             } else {
-              this.setState({ error: "The selected currency is not available!" });
+              this.setState({ error: "The selected currency is not available!",
+                              errorFrom: null,
+                              errorTo: null 
+                            });
             }
           } else {
-            this.setState({ error: "The selected currency is not available!" });
+            this.setState({ error: "The selected currency is not available!",
+                            errorFrom: null,
+                            errorTo: null 
+                          });
           }
         })
     }
@@ -95,16 +126,18 @@ class CurrencyConverter extends React.Component {
               label="From"
               onChangeCurrency={this.onChangeCurrency}
               selectedCurrency={this.state.fromSelectedCurrency}
+              error={this.state.errorFrom}
             />        
             <div className="input-group">
               <span className="input-group-addon">{this.state.fromSymbol}</span>
               <input 
                 type="number"
                 id="currencyFrom" 
-                value={parseFloat(this.state.currencyFrom).toFixed(2)} 
+                value={this.state.currencyFrom} 
                 onChange={this.onChangeCurrency}
                 autoFocus
                 onFocus={this.moveCaretAtEnd}
+                ref={input => { this.nameInput = input; }}
               />
               <span className="input-group-addon" id="basic-addon2">{this.state.fromSelectedCurrency}</span>
             </div>             
@@ -117,6 +150,7 @@ class CurrencyConverter extends React.Component {
               label="To"
               onChangeCurrency={this.onChangeCurrency}
               selectedCurrency={this.state.toSelectedCurrency}
+              error={this.state.errorTo}
             />    
             <div className="input-group">
               <span className="input-group-addon">{this.state.toSymbol}</span>
@@ -124,9 +158,9 @@ class CurrencyConverter extends React.Component {
                 type="number"
                 id="currencyTo" 
                 value={parseFloat(this.state.currencyTo).toFixed(2)}
-                onChange={this.onChangeCurrency}
                 autoFocus
                 onFocus={this.moveCaretAtEnd}
+                ref={input => { this.nameInput = input; }}
               />
               <span className="input-group-addon" id="basic-addon2">{this.state.toSelectedCurrency}</span>
             </div>             
